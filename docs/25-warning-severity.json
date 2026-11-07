@@ -1,0 +1,80 @@
+{
+  "schema": "warning-severity@1",
+  "source": "docs/00-brief.md §3 与 docs/15-decisions.md D3；严重度模型见 docs/20-layout-spec.md §3.2",
+  "note": "total 为待处置预警（critical + warning + attention），不含 normal；条目总数为 11。metric 为 brief 原文派生数值，无源数据者记为 \"—\"（禁止补 0）。",
+  "summary": {
+    "total": 8,
+    "critical": 3,
+    "warning": 3,
+    "attention": 2,
+    "normal": 3
+  },
+  "items": [
+    {
+      "board": "监管改造",
+      "title": "人数清点互监身份异常",
+      "severity": "critical",
+      "metric": "7 人"
+    },
+    {
+      "board": "监管改造",
+      "title": "劳动工具清点人身识别异常",
+      "severity": "critical",
+      "metric": "9 例"
+    },
+    {
+      "board": "监管改造",
+      "title": "渗透破坏监管秩序预警",
+      "severity": "critical",
+      "metric": "—"
+    },
+    {
+      "board": "监管改造",
+      "title": "监外罪犯事务管理",
+      "severity": "warning",
+      "metric": "4 人"
+    },
+    {
+      "board": "监管改造",
+      "title": "罪犯消费异常预警",
+      "severity": "warning",
+      "metric": "11 人"
+    },
+    {
+      "board": "教育改造",
+      "title": "普通罪犯出监前3个月未完成再犯罪危险性评估",
+      "severity": "warning",
+      "metric": "1 项"
+    },
+    {
+      "board": "监管改造",
+      "title": "罪犯日用品采购管理",
+      "severity": "attention",
+      "metric": "2 人"
+    },
+    {
+      "board": "监管改造",
+      "title": "监内计算机管理",
+      "severity": "attention",
+      "metric": "—"
+    },
+    {
+      "board": "教育改造",
+      "title": "罪犯未按时开展顽（危）犯心理矫治",
+      "severity": "normal",
+      "metric": "0 项"
+    },
+    {
+      "board": "教育改造",
+      "title": "涉恐罪犯释放前6个月未完成再犯罪评估专项工作预警",
+      "severity": "normal",
+      "metric": "0 项"
+    },
+    {
+      "board": "教育改造",
+      "title": "3日内未完成扣20分以上罪犯危险性评估预警",
+      "severity": "normal",
+      "metric": "0 项"
+    }
+  ]
+}

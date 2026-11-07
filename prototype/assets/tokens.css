@@ -1,0 +1,270 @@
+/* ==========================================================================
+   tokens.css — 全部 design token
+   来源：docs/10-visual-direction.md §2–§4 / docs/20-layout-spec.md §1
+   规则：除本文件外，任何组件 css 不得出现裸色值 / 裸字号 / 裸间距
+   ========================================================================== */
+
+:root {
+  /* ---------- §2.1 背景层级（4 级，不得新增第 5 级） ---------- */
+  --bg-canvas:    #0B1017;
+  --bg-region:    #101822;
+  --bg-card:      #141E2A;
+  --bg-elevated:  #1C2836;
+  --bg-row-hover: #18242F;
+  --bg-card-hover:#17222F;
+
+  /* ---------- §2.2 中性色阶（7 级，对比度基准 = 卡片底） ---------- */
+  --neutral-0: #F2F6FA; /* 15.5:1 大数字 */
+  --neutral-1: #DCE5EE; /* 13.2:1 标题 */
+  --neutral-2: #B4C2D0; /*  9.3:1 正文 */
+  --neutral-3: #8494A6; /*  5.4:1 次文字（12px 地板） */
+  --neutral-4: #5F6E80; /*  3.2:1 弱文字（不承载数据） */
+  --neutral-5: #3A4757; /*  1.8:1 图形件 */
+  --neutral-6: #232F3D; /*  1.2:1 极弱分隔 */
+
+  /* ---------- 描边三档 ---------- */
+  --border-divider: #26333F; /* 1.30:1 卡片内部线 */
+  --border-default: #2E3D4E; /* 1.52:1 卡片外框 */
+  --border-strong:  #3B4C5E; /* 1.91:1 卡片 hover / 表头线 */
+
+  /* ---------- §2.3 主色（政务蓝） ---------- */
+  --blue-600: #2F74C0; /* 实底填充 */
+  --blue-500: #4A8CD4; /* 实底 hover */
+  --blue-700: #2664A8; /* 实底 active */
+  --blue-400: #77A9E1; /* 深底上的蓝（文字/图标/焦点环） */
+  --blue-300: #ABC8EC; /* 蓝底上次要文字 */
+  --blue-tint:  rgba(82, 144, 218, 0.14);
+  --blue-ghost: rgba(47, 116, 192, 0.08);
+  --blue-ring:  rgba(119, 169, 225, 0.55);
+
+  /* ---------- §2.4 语义色（3 支 × 3 形态） ---------- */
+  --ok-text:    #3FC1A7;
+  --warn-text:  #DC9F46;
+  --danger-text:#E5746E;
+  --danger-600: #C9403C;
+  --ok-bg:      rgba(63, 193, 167, 0.12);
+  --warn-bg:    rgba(220, 159, 70, 0.12);
+  --danger-bg:  rgba(229, 116, 110, 0.12);
+  --ok-line:    rgba(63, 193, 167, 0.32);
+  --warn-line:  rgba(220, 159, 70, 0.32);
+  --danger-line:rgba(229, 116, 110, 0.32);
+  --danger-row: rgba(229, 116, 110, 0.06);
+
+  /* ---------- §2.5 图表序列色（按序取用） ---------- */
+  --s1: #5290DA;
+  --s2: #3FC1A7;
+  --s3: #DC9F46;
+  --s4: #8B7FD1;
+  --s5: #7A93AC;
+  --s6: #C77E93;
+  --s7: #5F6E80; /* > 6 类归并「其他」 */
+
+  /* ---------- §3.1 字体族（系统栈，零外部字体） ---------- */
+  --font-sans: -apple-system, "PingFang SC", "HarmonyOS Sans SC",
+               "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  --font-num:  -apple-system, "SF Pro Text", "PingFang SC",
+               "Microsoft YaHei", sans-serif;
+
+  /* ---------- §3.2 字号阶梯（1920×1080 基准 / near 档） ---------- */
+  --fs-display: 44px;  --lh-display: 48px;
+  --fs-metric:  32px;  --lh-metric:  38px;
+  --fs-h1:      26px;  --lh-h1:      34px;
+  --fs-h2:      18px;  --lh-h2:      26px;
+  --fs-h3:      15px;  --lh-h3:      22px;
+  --fs-body:    14px;  --lh-body:    22px;
+  --fs-sm:      13px;  --lh-sm:      20px;
+  --fs-xs:      12px;  --lh-xs:      18px;
+
+  /* 数据类字号（受 --data-reading-distance 三档控制） */
+  --fs-legend: 12px; /* 图例 / 图表数值标签 */
+  --fs-axis:   12px; /* 轴标签 */
+  --fs-cap:    12px; /* 口径副标 / 时间戳 / 序号 */
+  --cap-color: var(--neutral-3);
+
+  /* ---------- §3.4 数字排印 ---------- */
+  --num-feat: "tnum" 1, "lnum" 1;
+
+  /* ---------- §4.1 间距标尺（8pt，只用这 10 档） ---------- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+  --s-9: 48px;
+  --s-10: 64px;
+
+  /* ---------- §4.4 圆角（3 档，刻意偏小） ---------- */
+  --r-xs: 2px;
+  --r-sm: 4px;
+  --r-md: 6px;
+
+  /* ---------- §4.5 阴影（≤ 2 层，纯黑，blur ≤ 24） ---------- */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.32);
+  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.40);
+
+  /* ---------- §1 全局骨架（1920×1080） ---------- */
+  --page-w: 1920px;
+  --topbar-h: 64px;
+  --nav-h: 56px;
+  --content-pad-y-top: 20px;
+  --content-pad-y-bottom: 16px;
+  --content-h: 924px;            /* 1080 − 64 − 56 − 20 − 16 */
+  --pad-x: 32px;
+  --gutter: 24px;
+  --col-side: 446px;             /* span 3 */
+  --col-mid: 916px;              /* span 6 */
+  --content-w: 1856px;
+
+  /* KPI 带 */
+  --band-h-p0: 146px;
+  --band-h-p1: 122px;
+  --cols-h-p0: 762px;
+  --cols-h-p1: 786px;
+
+  /* 卡片 */
+  --card-head-h: 44px;
+  --card-gap: 12px;
+  --card-pad: 20px;
+  --card-pad-bottom-tbl: 12px;
+  --card-pad-overview: 24px;
+  --card-gap-overview: 16px;
+
+  /* 表格 */
+  --row-h: 40px;
+  --row-h-compact: 32px;
+  --thead-h: 36px;
+  --pager-h: 44px;
+  --cell-px: var(--s-3);
+
+  /* 图表色（供 charts.js 读取，避免 js 内裸色值） */
+  --chart-grid: rgba(140, 170, 200, 0.10);
+  --chart-base: rgba(140, 170, 200, 0.24);
+  --chart-track: rgba(140, 170, 200, 0.10);
+}
+
+/* ==========================================================================
+   §2 主题 B · cockpit（默认）—— 驾驶舱质感
+   原则「分层用光」：氛围层（背景）与结构层（卡片/标题/导航）允许用光，
+   内容层（文字/数字/表格内容）一律不加 glow、不加 text-shadow。
+   所有色值均已验算：正文 ≥ 4.5:1（卡片底 #0E1C2A）
+   ========================================================================== */
+
+:root[data-theme="cockpit"] {
+  /* 底色压深，给光留出空间 */
+  --bg-canvas:    #04080E;
+  --bg-region:    #0A1520;
+  --bg-card:      #0E1C2A;
+  --bg-elevated:  #13293C;
+  --bg-row-hover: rgba(59, 158, 255, 0.06);
+  --bg-card-hover:#122436;
+
+  /* 中性色阶：文字一律不发光，靠对比度取胜 */
+  --neutral-0: #E8F2FF; /* 15.25:1 大数字 */
+  --neutral-1: #C9DFF2; /* 11.40:1 标题 */
+  --neutral-2: #AFC6DC; /*  9.80:1 正文 14px */
+  --neutral-3: #7E96AE; /*  5.63:1 次文字 13px（地板） */
+  --neutral-4: #6C8AA6; /*  4.78:1 弱文字（不承载数据） */
+  --neutral-5: #35506A; /*  2.1:1 图形件 */
+  --neutral-6: #1B2E42; /*  1.3:1 极弱分隔 */
+
+  /* 描边三档：结构层用光，透明度压在 .14–.45 */
+  --border-divider: rgba(59, 158, 255, 0.14);
+  --border-default: rgba(59, 158, 255, 0.30);
+  --border-strong:  rgba(59, 158, 255, 0.45);
+
+  /* 主色提亮提饱和（原 #2F74C0 偏灰） */
+  --blue-600: #2F86D8;
+  --blue-500: #3B9EFF;
+  --blue-700: #1F6FBF;
+  --blue-400: #3B9EFF; /*  6.17:1 深底上的蓝（文字/图标/焦点环） */
+  --blue-300: #9FD2FF;
+  --blue-tint:  rgba(59, 158, 255, 0.14);
+  --blue-ghost: rgba(59, 158, 255, 0.08);
+  --blue-ring:  rgba(59, 158, 255, 0.55);
+
+  /* 语义色（青作辅助色） */
+  --ok-text:     #2FD9A8;
+  --warn-text:   #FFAA3B;
+  --danger-text: #FF5C5C;
+  --danger-600:  #D64040;
+  --ok-bg:       rgba(47, 217, 168, 0.12);
+  --warn-bg:     rgba(255, 170, 59, 0.12);
+  --danger-bg:   rgba(255, 92, 92, 0.12);
+  --ok-line:     rgba(47, 217, 168, 0.34);
+  --warn-line:   rgba(255, 170, 59, 0.34);
+  --danger-line: rgba(255, 92, 92, 0.34);
+  --danger-row:  rgba(255, 92, 92, 0.06);
+
+  /* 图表序列色（提亮一档，色相保持可区分） */
+  --s1: #3B9EFF;
+  --s2: #39D2E0;
+  --s3: #FFAA3B;
+  --s4: #9B8CFF;
+  --s5: #6E8FAE;
+  --s6: #E97FA0;
+  --s7: #5F6E80;
+
+  /* 图表结构线：网格压到 .08，避免与数据线抢注意力 */
+  --chart-grid:  rgba(90, 150, 210, 0.08);
+  --chart-base:  rgba(90, 150, 210, 0.24);
+  --chart-track: rgba(90, 150, 210, 0.10);
+
+  /* 阴影：驾驶舱用「氛围辉光」，不是霓虹；纯黑阴影仍保留一层 */
+  --shadow-1: 0 0 24px rgba(30, 120, 220, 0.10), inset 0 0 32px rgba(30, 120, 220, 0.06);
+  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.40);
+
+  /* 圆角：切角形态下收到 2px，避免圆角与切角打架 */
+  --r-sm: 2px;
+}
+
+/* ==========================================================================
+   §3.6 / 裁定 D4 观看距离三档 —— 只切字号 token，绝不使用 transform: scale()
+   ========================================================================== */
+
+/* mid（默认，1.5–3m 指挥席）：承载数据的 12px 档升一档，轴标签维持 12px */
+:root[data-reading-distance="mid"] {
+  --fs-legend: 13px;
+  --fs-axis: 12px;
+  --fs-cap: 13px;
+}
+
+/* near（≤1.5m 近端操作席）：按基准值，不调整 */
+:root[data-reading-distance="near"] {
+  --fs-legend: 12px;
+  --fs-axis: 12px;
+  --fs-cap: 12px;
+  --cap-color: var(--neutral-3);
+}
+
+/* far（≥3m 远端 / 巡视通道） */
+:root[data-reading-distance="far"] {
+  --fs-display: 55px;  --lh-display: 60px;
+  --fs-metric:  40px;  --lh-metric:  46px;
+  --fs-h1:      31px;  --lh-h1:      40px;
+  --fs-h2:      20px;  --lh-h2:      28px;
+  --fs-body:    15px;  --lh-body:    24px;
+  --fs-sm:      14px;  --lh-sm:      22px;
+  --fs-xs:      13px;  --lh-xs:      20px;
+  --fs-legend:  14px;
+  --fs-axis:    14px;
+  --fs-cap:     14px;
+  --cap-color: var(--neutral-3);
+}
+
+/* --------------------------------------------------------------------------
+   cockpit 主题的字号地板：发光/深底环境在原字号上抬一档（12→13 / 13→14）。
+   必须写在观看距离三档之后才能压住 near/mid 的 12px；
+   far 档本身已 ≥13px，用 :not() 排除，避免把远端阶梯降回来。
+   -------------------------------------------------------------------------- */
+:root[data-theme="cockpit"]:not([data-reading-distance="far"]) {
+  --fs-xs:     13px;
+  --fs-sm:     14px;
+  --fs-body:   14px;
+  --fs-cap:    13px;
+  --fs-legend: 13px;
+  --lh-xs:     18px;
+  --lh-sm:     20px;
+}
