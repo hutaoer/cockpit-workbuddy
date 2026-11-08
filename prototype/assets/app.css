@@ -310,7 +310,7 @@ table { border-collapse: separate; border-spacing: 0; }
   gap: var(--s-4);
   position: relative;
 }
-.page.is-enter { animation: fadeIn 120ms ease-out both; }
+.page.is-enter { animation: fadeIn 420ms var(--ease-enter) both; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -1966,32 +1966,18 @@ button.th { width: 100%; text-align: left; display: block; overflow: hidden; tex
 .ch-caps { display: none; }
 .ch-bar-top { display: none; }
 
-/* ---- 16.1 氛围层：径向光晕 + 24px 网格 + 四角暗角 ---- */
+/* ---- 16.1 氛围层：静态环境底光（visual §2.1，每页 1 处、禁止动画） ---- */
 :root[data-theme="cockpit"] body { background: var(--bg-canvas); }
 
 :root[data-theme="cockpit"] .ck {
   background:
-    radial-gradient(1200px 700px at 18% -10%, rgba(40, 130, 230, 0.22), transparent 70%),
-    radial-gradient(900px 620px at 102% 108%, rgba(30, 190, 220, 0.12), transparent 70%),
-    radial-gradient(140% 100% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55)),
-    repeating-linear-gradient(0deg, rgba(90, 150, 210, 0.045) 0 1px, transparent 1px 24px),
-    repeating-linear-gradient(90deg, rgba(90, 150, 210, 0.045) 0 1px, transparent 1px 24px),
+    radial-gradient(1200px 620px at 50% -12%,
+      rgba(59, 169, 255, 0.10) 0%,
+      rgba(34, 211, 238, 0.04) 42%,
+      transparent 72%),
+    radial-gradient(900px 620px at 102% 108%, rgba(30, 190, 220, 0.08), transparent 70%),
+    radial-gradient(140% 100% at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.50)),
     linear-gradient(180deg, #050A12 0%, #04080E 55%, #050B13 100%);
-}
-
-/* 背景光晕极慢呼吸（18s，只动 opacity） */
-@keyframes ckBreathe {
-  from { opacity: 0.55; }
-  to   { opacity: 1; }
-}
-:root[data-theme="cockpit"] .ck::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(900px 520px at 22% 0%, rgba(59, 158, 255, 0.10), transparent 70%);
-  animation: ckBreathe 18s ease-in-out infinite alternate;
-  z-index: 0;
 }
 /* 只抬 z-index，绝不覆盖 .ck__top 的 sticky 与 .ck__nav 的 fixed */
 :root[data-theme="cockpit"] .ck__top { z-index: 50; }
@@ -2068,33 +2054,55 @@ button.th { width: 100%; text-align: left; display: block; overflow: hidden; tex
   box-shadow: 0 0 10px rgba(59, 158, 255, 0.8);
 }
 
-/* ---- 16.4 卡片：切角 + 辉光边 + 顶部高光 + 左上角标 ---- */
+/* ---- 16.4 卡片：1px 渐变描边 + 顶部高光 + 双角角标（visual §3.2 / §7.1） ---- */
 :root[data-theme="cockpit"] .card {
+  border: 1px solid transparent;
   background:
-    linear-gradient(90deg, transparent, rgba(130, 205, 255, 0.55), transparent) top center / 100% 1px no-repeat,
-    linear-gradient(180deg, rgba(14, 28, 42, 0.94), rgba(9, 18, 28, 0.94));
-  border-color: rgba(59, 158, 255, 0.30);
-  box-shadow: 0 0 24px rgba(30, 120, 220, 0.10), inset 0 0 32px rgba(30, 120, 220, 0.06);
-  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-  transition: border-color 160ms ease-out, box-shadow 160ms ease-out;
+    var(--card-topline) top center / 100% 1px no-repeat border-box,
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    var(--card-edge) border-box;
+  box-shadow: var(--shadow-1);
+  transition: box-shadow var(--dur-state) var(--ease-state);
 }
 :root[data-theme="cockpit"] .card:hover {
-  border-color: rgba(59, 158, 255, 0.55);
-  box-shadow: 0 0 32px rgba(30, 120, 220, 0.18), inset 0 0 32px rgba(30, 120, 220, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(59, 158, 255, 0.28),
+    0 0 24px rgba(30, 120, 220, 0.16),
+    inset 0 0 24px rgba(30, 120, 220, 0.07);
 }
-/* 平滑滚动区域在切角下不露白 */
 :root[data-theme="cockpit"] .card__body { background: transparent; }
-/* 左上角 8px 方块（绝对定位，不参与布局） */
-:root[data-theme="cockpit"] .card__body::before {
+
+/* KPI 带同样使用结构光（它与 .card 同级，但不是 .card） */
+:root[data-theme="cockpit"] .kpi {
+  position: relative;
+  border: 1px solid transparent;
+  background:
+    var(--card-topline) top center / 100% 1px no-repeat border-box,
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    var(--card-edge) border-box;
+  box-shadow: var(--shadow-1);
+}
+
+/* 双角角标：只给关键卡（概览卡 + KPI 带），单屏 ≤ 2 张（visual §3.2 L1-3） */
+:root[data-theme="cockpit"] .card--overview::after,
+:root[data-theme="cockpit"] .kpi::after {
   content: "";
   position: absolute;
-  left: 8px;
-  top: 8px;
-  width: 8px;
-  height: 8px;
-  background: rgba(59, 158, 255, 0.60);
-  box-shadow: 0 0 8px rgba(59, 158, 255, 0.55);
+  inset: 8px;
   pointer-events: none;
+  opacity: calc(0.55 * var(--fx-glow));
+  background:
+    linear-gradient(var(--glow-cyan), var(--glow-cyan)) left top / var(--card-corner) 1px no-repeat,
+    linear-gradient(var(--glow-cyan), var(--glow-cyan)) left top / 1px var(--card-corner) no-repeat,
+    linear-gradient(var(--glow-cyan), var(--glow-cyan)) right bottom / var(--card-corner) 1px no-repeat,
+    linear-gradient(var(--glow-cyan), var(--glow-cyan)) right bottom / 1px var(--card-corner) no-repeat;
+}
+
+/* 预警卡外晕（L2-1）：色值随该卡最高严重度，同排最多 1 张 */
+:root[data-theme="cockpit"] .card--warn {
+  box-shadow:
+    0 0 0 1px var(--sev-ring, var(--warn-line)),
+    0 0 18px var(--sev-glow, var(--warn-glow));
 }
 
 /* ---- 16.5 标题块：HUD 形态（编号 + 短横线 + 竖条） ---- */
@@ -2172,9 +2180,9 @@ button.th { width: 100%; text-align: left; display: block; overflow: hidden; tex
 :root[data-theme="cockpit"] .chart .ch-caps { display: inline; }
 :root[data-theme="cockpit"] .chart .ch-cap { filter: drop-shadow(0 0 5px rgba(59, 158, 255, 0.85)); }
 
-/* ---- 16.9 入场：整页 320ms + 卡片 stagger 60ms（只在本路由首帧挂 .ck-enter） ---- */
+/* ---- 16.9 入场：720ms + stagger 40ms（visual §4.3，只在本路由首帧挂 .ck-enter） ---- */
 @keyframes ckCardIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: none; }
 }
 @keyframes ckChartIn {
@@ -2182,15 +2190,15 @@ button.th { width: 100%; text-align: left; display: block; overflow: hidden; tex
   to   { stroke-dashoffset: 0; }
 }
 :root[data-theme="cockpit"] .ck-enter .card {
-  animation: ckCardIn 360ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  animation: ckCardIn var(--dur-enter) var(--ease-enter) both;
 }
 :root[data-theme="cockpit"] .ck-enter .col > .card:nth-child(1) { animation-delay: 0ms; }
-:root[data-theme="cockpit"] .ck-enter .col > .card:nth-child(2) { animation-delay: 60ms; }
-:root[data-theme="cockpit"] .ck-enter .col > .card:nth-child(3) { animation-delay: 120ms; }
+:root[data-theme="cockpit"] .ck-enter .col > .card:nth-child(2) { animation-delay: 40ms; }
+:root[data-theme="cockpit"] .ck-enter .col > .card:nth-child(3) { animation-delay: 80ms; }
 :root[data-theme="cockpit"] .ck-enter .band > .card { animation-delay: 0ms; }
 :root[data-theme="cockpit"] .ck-enter .chart .ch-line {
   stroke-dasharray: 900;
-  animation: ckChartIn 600ms ease-out both 120ms;
+  animation: ckChartIn var(--dur-enter) ease-out both 80ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2227,3 +2235,55 @@ button.th { width: 100%; text-align: left; display: block; overflow: hidden; tex
   box-shadow: inset 0 0 10px rgba(59, 158, 255, 0.25);
 }
 .themesw__b + .themesw__b { border-left: 1px solid var(--border-default); }
+
+/* ==========================================================================
+   17. 3D 背景装饰层（visual §4.1 / §4.2）
+   只占位，不拦截事件；关闭 data-fx="off" 时整层隐藏
+   ========================================================================== */
+
+/* 球体作为「健康度矩阵」卡内底纹：画在卡面之上、文字之下
+   有效线亮度 ≈ 0.45 × 0.30 ≈ 13%，肉眼可见但不抢数据 */
+.stage3d {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: calc(0.45 * var(--fx-glow));
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+}
+
+.card--overview .card__head { position: relative; z-index: 2; }
+.card--overview .hgrid { position: relative; z-index: 1; }
+
+/* ==========================================================================
+   18. 降级态收口（必须压过主题规则，故放在文件末尾）
+   ========================================================================== */
+
+:root[data-theme="cockpit"][data-fx="off"] .card {
+  border: 1px solid var(--border-default);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-1);
+}
+
+:root[data-theme="cockpit"][data-fx="off"] .kpi {
+  border: 1px solid var(--border-default);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-1);
+}
+
+:root[data-theme="cockpit"][data-fx="off"] .card--overview::after,
+:root[data-theme="cockpit"][data-fx="off"] .kpi::after,
+:root[data-theme="cockpit"][data-fx="off"] .ck__top::after {
+  display: none;
+}
+
+:root[data-theme="cockpit"][data-fx="off"] .chart .ch-line,
+:root[data-theme="cockpit"][data-fx="off"] .chart .ch-bar,
+:root[data-theme="cockpit"][data-fx="off"] .chart .ch-arc,
+:root[data-theme="cockpit"][data-fx="off"] .chart .ch-seg,
+:root[data-theme="cockpit"][data-fx="off"] .chart .ch-dot,
+:root[data-theme="cockpit"][data-fx="off"] .chart .ch-cap {
+  filter: none;
+}

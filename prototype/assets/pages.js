@@ -40,7 +40,12 @@
   function card(o) {
     var style = '';
     if (o.h) style += 'height:' + px(o.h) + ';';
-    if (o.sev) style += '--sev:' + o.sev + ';';
+    if (o.sev) {
+      style += '--sev:' + o.sev + ';';
+      /* 严重度 → 描边/外晕一对 token（visual §3.2 L2-1） */
+      var sk = o.sev.indexOf('danger') > -1 ? 'danger' : (o.sev.indexOf('warn') > -1 ? 'warn' : 'ok');
+      style += '--sev-ring:var(--' + sk + '-line);--sev-glow:var(--' + sk + '-glow);';
+    }
     return '<section class="card ' + (o.cls || '') + '"' + (o.id ? ' id="' + o.id + '"' : '') +
       (style ? ' style="' + style + '"' : '') + ' aria-label="' + attr(o.title) + '">' +
       head(o) +
@@ -91,6 +96,8 @@
     route: 'home',
     dist: 'mid',
     theme: 'cockpit',   /* 'cockpit'（默认驾驶舱质感）| 'calm'（沉静政务） */
+    fx: 'on',           /* on | led | off（visual §4.4 光效三态） */
+    motion: 'full',     /* full | reduced */
     tbl: {},
     warnSort: {},
     view: {},
@@ -416,7 +423,8 @@
     var c04 = card({
       no: '04', title: '六大板块运行健康度', count: '6 项', h: 286, cls: 'card--overview',
       ops: '<span class="head__hint">按严重度分级</span><button class="head__dots" data-act="noop" aria-label="更多操作">⋯</button>',
-      body: '<div class="hgrid">' + cellsHtml + '</div>'
+      body: '<canvas class="stage3d" id="ck-stage3d" aria-hidden="true"></canvas>' +
+        '<div class="hgrid">' + cellsHtml + '</div>'
     });
 
     /* [05] 跨板块 Top 异常 916×460：5 条 ×72 + 4 分割 = 364 */
@@ -1402,6 +1410,9 @@
       dists.map(function (d) {
         return '<button class="tab' + (st.dist === d[0] ? ' is-on' : '') + '" data-act="dist" data-v="' + d[0] + '">' + d[1] + '</button>';
       }).join('') + '</div>' +
+      '<button class="btn btn--ghost fxbtn" data-act="fx" aria-label="光效强度" ' +
+      'title="光效三态：开 / LED 衰减 / 关">特效 ' +
+      (st.fx === 'on' ? '开' : (st.fx === 'led' ? 'LED' : '关')) + '</button>' +
       '<button class="btn btn--ghost" data-act="filter" aria-haspopup="true">全局筛选 ▾</button>' +
       '<button class="btn btn--ghost" data-act="fullscreen" style="width:32px;padding:0;justify-content:center" aria-label="全屏">' +
       '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4" stroke="#8494A6" stroke-width="1.3"/></svg></button>' +
@@ -1437,6 +1448,9 @@
     var pageEl = main.querySelector('.page');
     if (pageEl) { pageEl.classList.add('is-enter'); }
     main.scrollTop = 0;
+
+    /* 首页中区 3D 背景层：重渲染后重新挂载（V5.5 独立 canvas） */
+    if (CK.stage3d) CK.stage3d.sync();
     document.title = p.title + ' · ' + CK.meta.sys;
 
     /* 入场 stagger：只在路由切换 / 主题切换的首帧挂类，状态重渲染不挂，避免闪烁 */
@@ -1452,6 +1466,14 @@
   function applyTheme() {
     document.documentElement.setAttribute('data-theme', st.theme);
     if (CK.chart && CK.chart.setTheme) CK.chart.setTheme(st.theme);
+  }
+
+  /* 光效三态 + 动效开关落盘（visual §4.4） */
+  function applyFx() {
+    var root = document.documentElement;
+    root.setAttribute('data-fx', st.fx);
+    root.setAttribute('data-motion', st.motion);
+    if (CK.stage3d && CK.stage3d.sync) CK.stage3d.sync();
   }
 
   /* 数字 count-up 400ms：只对纯整数文本生效，tabular-nums 保证不抖动 */
@@ -1578,6 +1600,13 @@
       render(true);          /* 重渲染以让柱体渐变/端点圆点按新主题重建 */
       return;
     }
+    if (act === 'fx') {
+      /* on → led → off → on */
+      st.fx = st.fx === 'on' ? 'led' : (st.fx === 'led' ? 'off' : 'on');
+      applyFx();
+      renderTop();
+      return;
+    }
     if (act === 'dist') {
       st.dist = el.getAttribute('data-v');
       document.documentElement.setAttribute('data-reading-distance', st.dist);
@@ -1618,8 +1647,12 @@
   CK.boot = function () {
     var init = (location.hash || '#/home').replace(/^#\/?/, '');
     st.route = PAGES[init] ? init : 'home';
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      st.motion = 'reduced';
+    }
     document.documentElement.setAttribute('data-reading-distance', st.dist);
     applyTheme();
+    applyFx();
     render(true);
     window.addEventListener('hashchange', applyRoute);
     document.addEventListener('click', onClick);

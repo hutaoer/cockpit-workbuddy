@@ -49,6 +49,9 @@
   --warn-line:  rgba(220, 159, 70, 0.32);
   --danger-line:rgba(229, 116, 110, 0.32);
   --danger-row: rgba(229, 116, 110, 0.06);
+  --ok-glow:    rgba(63, 193, 167, 0.14);
+  --warn-glow:  rgba(220, 159, 70, 0.14);
+  --danger-glow:rgba(229, 116, 110, 0.14);
 
   /* ---------- §2.5 图表序列色（按序取用） ---------- */
   --s1: #5290DA;
@@ -143,6 +146,37 @@
   --chart-grid: rgba(140, 170, 200, 0.10);
   --chart-base: rgba(140, 170, 200, 0.24);
   --chart-track: rgba(140, 170, 200, 0.10);
+
+  /* ---------- §2.4 光效层（v2 新增；只允许出现在非数据元素上） ---------- */
+  --glow-cyan:      #22D3EE;                     /* 角标 / 高光线 / 流动路径 */
+  --glow-blue:      #3BA9FF;                     /* 环境底光 / 主数值微光 */
+  --glow-cyan-line: rgba(34, 211, 238, 0.55);    /* 1px 结构光线 */
+  --glow-cyan-soft: rgba(34, 211, 238, 0.16);
+  --glow-blue-soft: rgba(59, 169, 255, 0.12);
+
+  /* ---------- §3.2 结构光（L1） ---------- */
+  --card-edge: linear-gradient(135deg,
+      rgba(34, 211, 238, 0.38) 0%,
+      rgba(47, 116, 192, 0.10) 38%,
+      rgba(34, 211, 238, 0.18) 100%);
+  --card-topline: linear-gradient(90deg,
+      transparent 0%,
+      var(--glow-cyan-line) 28%,
+      var(--glow-cyan-line) 72%,
+      transparent 100%);
+  --card-corner: 12px;
+
+  /* ---------- §4.3 动效 ---------- */
+  --dur-enter: 720ms;
+  --dur-state: 160ms;
+  --dur-loop:  8s;
+  --ease-enter: cubic-bezier(.16, 1, .3, 1);
+  --ease-state: cubic-bezier(.4, 0, .2, 1);
+  --stagger: 40ms;
+
+  /* ---------- 光效强度（供 data-fx 三态缩放，勿在组件内改） ---------- */
+  --fx-glow: 1;        /* on  */
+  --fx-blur: 24px;
 }
 
 /* ==========================================================================
@@ -197,6 +231,9 @@
   --warn-line:   rgba(255, 170, 59, 0.34);
   --danger-line: rgba(255, 92, 92, 0.34);
   --danger-row:  rgba(255, 92, 92, 0.06);
+  --ok-glow:     rgba(47, 217, 168, 0.14);
+  --warn-glow:   rgba(255, 170, 59, 0.14);
+  --danger-glow: rgba(255, 92, 92, 0.14);
 
   /* 图表序列色（提亮一档，色相保持可区分） */
   --s1: #3B9EFF;
@@ -212,12 +249,73 @@
   --chart-base:  rgba(90, 150, 210, 0.24);
   --chart-track: rgba(90, 150, 210, 0.10);
 
-  /* 阴影：驾驶舱用「氛围辉光」，不是霓虹；纯黑阴影仍保留一层 */
-  --shadow-1: 0 0 24px rgba(30, 120, 220, 0.10), inset 0 0 32px rgba(30, 120, 220, 0.06);
+  /* 光效层：与驾驶舱主色同源（青 + 蓝两色相，不得再加第三色相） */
+  --glow-cyan:      #39D2E0;
+  --glow-blue:      #3B9EFF;
+  --glow-cyan-line: rgba(57, 210, 224, 0.55);
+  --glow-cyan-soft: rgba(57, 210, 224, 0.16);
+  --glow-blue-soft: rgba(59, 158, 255, 0.12);
+
+  /* 结构光：青→蓝 1px 渐变描边（visual §3.2 L1-2） */
+  --card-edge: linear-gradient(135deg,
+      rgba(57, 210, 224, 0.38) 0%,
+      rgba(47, 134, 216, 0.10) 38%,
+      rgba(57, 210, 224, 0.18) 100%);
+  --card-topline: linear-gradient(90deg,
+      transparent 0%,
+      var(--glow-cyan-line) 28%,
+      var(--glow-cyan-line) 72%,
+      transparent 100%);
+
+  /* 阴影：外晕 ≤ 24px / alpha ≤ .35；内辉光同样收在 24px 内 */
+  --shadow-1: 0 0 24px rgba(30, 120, 220, 0.10), inset 0 0 24px rgba(30, 120, 220, 0.06);
   --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.40);
 
-  /* 圆角：切角形态下收到 2px，避免圆角与切角打架 */
-  --r-sm: 2px;
+  /* 圆角：v2 取消切角，恢复 4px（visual §6.4） */
+  --r-sm: 4px;
+}
+
+/* ==========================================================================
+   §4.4 光效三态（视觉 §3.5 / §4.4）
+   on  = 全量；led = 现场拼接屏衰减；off = 降级，只保留结构
+   ========================================================================== */
+
+:root[data-fx="led"] {
+  --fx-glow: 0.6;
+  --fx-blur: 16px;
+}
+
+:root[data-fx="off"] {
+  --fx-glow: 0;
+  --fx-blur: 0px;
+}
+
+/* 降级态：渐变描边与光效全部回退为实线结构 */
+:root[data-fx="off"] .card {
+  border: 1px solid var(--border-default);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-1);
+}
+:root[data-fx="off"] .card::before,
+:root[data-fx="off"] .card--tech::after,
+:root[data-fx="off"] .ck__top::after,
+:root[data-fx="off"] .stage3d { display: none; }
+:root[data-fx="off"] .kpi__val,
+:root[data-fx="off"] .kpi-display { text-shadow: none; }
+:root[data-fx="off"] .chart .ch-line,
+:root[data-fx="off"] .chart .ch-bar,
+:root[data-fx="off"] .chart .ch-arc,
+:root[data-fx="off"] .chart .ch-seg,
+:root[data-fx="off"] .chart .ch-dot,
+:root[data-fx="off"] .chart .ch-cap { filter: none; }
+
+/* 降低动效：所有动效归零，3D 停帧 */
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }
 
 /* ==========================================================================
